@@ -26,8 +26,10 @@ def hello():
     r = requests.get('https://api.nytimes.com/svc/topstories/v2/home.json?api-key=***REMOVED***)
     data = r.json()
     global wordbank2
+    global unalteredwb
     wordbank = []
     urlslist = []
+
     app = ClarifaiApp(***REMOVED***, ***REMOVED***)
     x = 1
     for result in data["results"]:
@@ -38,8 +40,9 @@ def hello():
                 urlslist.append(media["url"])
                 print(result.get("outputs")[0].get("data").get("concepts")[0])
                 wordbank.append(result.get("outputs")[0].get("data").get("concepts")[0].get("name"))
+    unalteredwb = str(wordbank)
     wordbank2 = str(set(wordbank))
-    print("The wordbank is " + ", ".join(str(e) for e in wordbank2))
+    print("The wordbank is " + "".join(str(e) for e in wordbank2))
 
     return render_template("index.html", image1=urlslist[0], image2=urlslist[1], image3=urlslist[2], image4=urlslist[3], image5=urlslist [4], image6=urlslist[5], image7=urlslist[6], image8=urlslist[7], image9=urlslist[8], image10=urlslist[9],)
 
@@ -51,6 +54,14 @@ def sms():
     message = client.api.account.messages.create(to=number,
                                                   from_=***REMOVED***,
                                                   body="In today's Top Stories we have: " + wordbank2)
+    if "input" in wordbank2:
+        location = [i for i,x in enumerate(unalteredwb) if x=="input"]
+        for fruit in location
+            printoururls = print()
+        message = client.api.account.messages.create(to=number,
+                                                     from_=***REMOVED***,
+                                                     body=printoururls)
+
     return 'this'
 if __name__ == "__main__":
     app.run()
