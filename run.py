@@ -1,7 +1,10 @@
 import requests, json
 from clarifai import rest
 from clarifai.rest import ClarifaiApp
-import time
+from flask import Flask, render_template
+from twilio import twiml
+from twilio.rest import Client
+
 '''
 A new way to to get your daily dose of news. Uses the NYT API, Twilio, and Clarifai.
 Grabs articles daily from NYT, parse through the data for image links.
@@ -12,20 +15,31 @@ Bonus: (hard as shit to do, I think)
 We make a web app, that displays only the images that we got from NYT. It's like a newspaper without words!!!1!
 requires flask
 '''
+app = Flask(__name__)
 
-r = requests.get('https://api.nytimes.com/svc/topstories/v2/home.json?api-key=***REMOVED***)
-#print(r.json()["response"]["docs"])
+app.config['DEBUG'] = True
 
-data = r.json()
+@app.route('/', methods=['GET', 'POST'])
+def hello():
+    r = requests.get('https://api.nytimes.com/svc/topstories/v2/home.json?api-key=***REMOVED***)
+    data = r.json()
+    wordbank = []
+    urlslist = []
+    app = ClarifaiApp(***REMOVED***, ***REMOVED***)
+    x = 1
+    for result in data["results"]:
+        for media in result["multimedia"]:
+            if media["format"] == "superJumbo":
+                model = app.models.get("aaa03c23b3724a16a56b629203edc62c")
+                result = model.predict_by_url(url=media["url"])
+                urlslist.append(media["url"])
+                print(result.get("outputs")[0].get("data").get("concepts")[0])
+                wordbank.append(result.get("outputs")[0].get("data").get("concepts")[0].get("name"))
+    print("The wordbank is " + str(set(wordbank)))
 
-app = ClarifaiApp(***REMOVED***, ***REMOVED***)
 
-for result in data["results"]:
-    for media in result["multimedia"]:
-        if media["format"] == "superJumbo":
-            model = app.models.get("aaa03c23b3724a16a56b629203edc62c")
+    return render_template("index.html", image1=urlslist[0], image2=urlslist[1], image3=urlslist[2], image4=urlslist[3], image5=urlslist [4], image6=urlslist[5], image7=urlslist[6], image8=urlslist[7], image9=urlslist[8], image10=urlslist[9],)
 
-            result = model.predict_by_url(url=media["url"])
-            print(result.get("outputs")[0].get("data").get("concepts")[0])
-            print(result.get("outputs")[0].get("data").get("concepts")[1])
-            print(result.get("outputs")[0].get("data").get("concepts")[2])
+if __name__ == "__main__":
+    app.run()
+
