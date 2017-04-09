@@ -1,8 +1,8 @@
 import requests, json
 from clarifai import rest
 from clarifai.rest import ClarifaiApp
-from flask import Flask, render_template
-from twilio import twiml
+from flask import Flask, render_template, request
+import twilio.twiml
 from twilio.rest import Client
 
 '''
@@ -19,10 +19,13 @@ app = Flask(__name__)
 
 app.config['DEBUG'] = True
 
+client = Client(***REMOVED***, ***REMOVED***)
+
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     r = requests.get('https://api.nytimes.com/svc/topstories/v2/home.json?api-key=***REMOVED***)
     data = r.json()
+    global wordbank2
     wordbank = []
     urlslist = []
     app = ClarifaiApp(***REMOVED***, ***REMOVED***)
@@ -35,11 +38,20 @@ def hello():
                 urlslist.append(media["url"])
                 print(result.get("outputs")[0].get("data").get("concepts")[0])
                 wordbank.append(result.get("outputs")[0].get("data").get("concepts")[0].get("name"))
-    print("The wordbank is " + str(set(wordbank)))
-
+    wordbank2 = str(set(wordbank))
+    print("The wordbank is " + ", ".join(str(e) for e in wordbank2))
 
     return render_template("index.html", image1=urlslist[0], image2=urlslist[1], image3=urlslist[2], image4=urlslist[3], image5=urlslist [4], image6=urlslist[5], image7=urlslist[6], image8=urlslist[7], image9=urlslist[8], image10=urlslist[9],)
 
+@app.route('/sms', methods=['POST'])
+
+def sms():
+    number = request.form['From']
+
+    message = client.api.account.messages.create(to=number,
+                                                  from_=***REMOVED***,
+                                                  body="In today's Top Stories we have: " + wordbank2)
+    return 'this'
 if __name__ == "__main__":
     app.run()
 
