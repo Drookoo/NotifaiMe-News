@@ -50,17 +50,22 @@ def hello():
 
 def sms():
     number = request.form['From']
-
-    message = client.api.account.messages.create(to=number,
-                                                  from_=***REMOVED***,
-                                                  body="In today's Top Stories we have: " + wordbank2)
-    if "input" in wordbank2:
-        location = [i for i,x in enumerate(unalteredwb) if x=="input"]
-        for fruit in location
-            printoururls = print()
+    fruit = request.form['Body']
+    if fruit in wordbank2:
+        location = [i for i,x in enumerate(unalteredwb) if x==fruit]
+        for fruit0 in location:
+            printoururls = location[fruit0]
         message = client.api.account.messages.create(to=number,
                                                      from_=***REMOVED***,
-                                                     body=printoururls)
+                                                     body=str(printoururls))
+
+    else:
+
+
+        message = client.api.account.messages.create(to=number,
+                                                     from_=***REMOVED***,
+                                                     body="In today's Top Stories we have: " + wordbank2)
+
 
     return 'this'
 if __name__ == "__main__":
