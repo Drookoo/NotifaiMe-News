@@ -7,7 +7,7 @@ app = Flask(__name__)
 # Download the Python helper library from twilio.com/docs/python/install
 # Your Account Sid and Auth Token from twilio.com/user/account
 
-client = Client(***REMOVED***, ***REMOVED***)
+client = Client(SID, AUTH)
 
 
 # message = client.messages("PN215931130033d599b663dda10f665ea1") \
@@ -17,7 +17,7 @@ def sms():
     number = request.form['From']
 
     message = client.api.account.messages.create(to=number,
-                                                  from_=***REMOVED***,
+                                                  from_=TWILIO_NUMBER
                                                   body="It works now!!")
     return 'this'
 

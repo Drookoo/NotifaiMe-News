@@ -19,18 +19,18 @@ app = Flask(__name__)
 
 app.config['DEBUG'] = True
 
-client = Client(***REMOVED***, ***REMOVED***)
+client = Client(KEY, VALUE)
 
 @app.route('/', methods=['GET', 'POST'])
 def hello():
-    r = requests.get('https://api.nytimes.com/svc/topstories/v2/home.json?api-key=***REMOVED***)
+    r = requests.get('https://api.nytimes.com/svc/topstories/v2/home.json?api-key=KEY')
     data = r.json()
     global wordbank2
     global unalteredwb
     wordbank = []
     urlslist = []
 
-    app = ClarifaiApp(***REMOVED***, ***REMOVED***)
+    app = ClarifaiApp(KEY, VALUE)
     x = 1
     for result in data["results"]:
         for media in result["multimedia"]:
@@ -56,14 +56,14 @@ def sms():
         for fruit0 in location:
             printoururls = location[fruit0]
         message = client.api.account.messages.create(to=number,
-                                                     from_=***REMOVED***,
+                                                     from_="TWILIO_NUMBER",
                                                      body=str(printoururls))
 
     else:
 
 
         message = client.api.account.messages.create(to=number,
-                                                     from_=***REMOVED***,
+                                                     from_="TWILIO_NUMBER",
                                                      body="In today's Top Stories we have: " + wordbank2)
 
 
